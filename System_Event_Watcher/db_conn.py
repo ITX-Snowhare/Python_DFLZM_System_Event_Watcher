@@ -32,15 +32,19 @@ class Db_Contro:
         if db_name == 'ln':
             db_conn = 'baan/baan@172.16.0.106:1521/ldlndb'
             # 添加其他数据库
-        try:
-            dbc = cx_Oracle.connect(db_conn)
-            print('数据库已连接！')
-        except:
-            print('连接数据库异常！')
+        else:
             no_conn = 1
-            #assert 0
 
         if no_conn == 0:
+            try:
+                dbc = cx_Oracle.connect(db_conn)
+                print('数据库已连接！')
+            except:
+                print('连接数据库异常！')
+                no_conn = 1
+                #assert 0
+
+
             cursor = dbc.cursor()
             cursor.execute(
                 'SELECT t$ddt+1/3,TO_DATE( substr(TRIM(t$dsca),-18,14) ,\'yyyy/mm/dd hh24:mi:ss\') '
