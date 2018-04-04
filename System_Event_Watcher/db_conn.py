@@ -10,6 +10,10 @@
 
 
 import cx_Oracle
+#import sys
+
+db_conn = 0
+no_conn = 0  # 检测数据库连接
 
 
 class Db_Contro:
@@ -17,7 +21,23 @@ class Db_Contro:
     连接数据库,并对数据库进行操作
     """
 
-    def get_dbimg(self,db_name):
+    def conn(self,db_name):
+        """
+        数据可库选择和连接测试
+        :param db_name: ln
+        :return:
+        """
+        global no_conn
+        global db_conn
+        if db_name == 'ln':
+            db_conn = 'baan/baan@172.16.0.106:1521/ldlndb'
+            # 添加其他数据库
+        else:
+            no_conn = 1
+
+
+
+    def get_sfimg(self):
         """
         连接数据库
         :returns
@@ -27,23 +47,19 @@ class Db_Contro:
 
         """
 
-        no_conn = 0  #检测数据库连接
-
-        if db_name == 'ln':
-            db_conn = 'baan/baan@172.16.0.106:1521/ldlndb'
-            # 添加其他数据库
-        else:
-            no_conn = 1
+        global no_conn
 
         if no_conn == 0:
             try:
                 dbc = cx_Oracle.connect(db_conn)
                 print('数据库已连接！')
             except:
-                print('连接数据库异常！')
+                print('网络或数据库异常！')
                 no_conn = 1
-                #assert 0
+                #sys.exit(1)
 
+
+        if no_conn == 0:
 
             cursor = dbc.cursor()
             cursor.execute(
@@ -67,7 +83,8 @@ class Db_Contro:
 
 if __name__=="__main__":
     test = Db_Contro()
-    a,b,c = test.get_dbimg('ln')
+    test.conn('cp')
+    a,b,c = test.get_sfimg()
     print(a)
     print(b)
     print(c)
