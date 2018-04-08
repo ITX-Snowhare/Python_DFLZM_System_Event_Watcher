@@ -67,7 +67,7 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "关于本软件"))
-        self.label_2.setText(_translate("Dialog", "ITX-系统事件监控信息查看器  版本 0.1a1"))
+        self.label_2.setText(_translate("Dialog", "ITX-系统事件监控信息查看器  版本 0.9.2b"))
         self.label_3.setText(_translate("Dialog", "本软件使用Python 3.6以及PyQt5进行开发。软件使用GPL协议授权。              问题反馈及源码索取：请发送邮件至 weijj@dflzm.com"))
         self.pushButton.setText(_translate("Dialog", "确定"))
         self.label_6.setText(_translate("Dialog", "本软件还处于开发阶段，可能还存在较多的问题。本软件适用于监控收货发料，LN序号，各接口的异常预警。"))

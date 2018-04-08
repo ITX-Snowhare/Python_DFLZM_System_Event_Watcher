@@ -35,8 +35,6 @@ class Db_Contro:
         else:
             no_conn = 1
 
-
-
     def get_sfimg(self):
         """
         连接数据库
@@ -57,7 +55,6 @@ class Db_Contro:
                 print('网络或数据库异常！')
                 no_conn = 1
                 #sys.exit(1)
-
 
         if no_conn == 0:
 
