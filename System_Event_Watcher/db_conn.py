@@ -10,7 +10,6 @@
 
 
 import cx_Oracle
-#import sys
 
 db_conn = 0
 no_conn = 0  # 检测数据库连接
@@ -18,7 +17,9 @@ no_conn = 0  # 检测数据库连接
 
 class Db_Contro:
     """
-    连接数据库,并对数据库进行操作
+    对数据库进行操作
+    连接测试
+    执行语句,取得结果返回元组
     """
 
     def conn(self,db_name):
@@ -80,7 +81,7 @@ class Db_Contro:
 
 if __name__=="__main__":
     test = Db_Contro()
-    test.conn('cp')
+    test.conn('ln')
     a,b,c = test.get_sfimg()
     print(a)
     print(b)

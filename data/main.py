@@ -8,7 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Main_Form(object):
+class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(500, 320)
@@ -38,12 +38,6 @@ class Main_Form(object):
         self.horizontalLayout.addItem(spacerItem)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.checkBox_auto_Flash = QtWidgets.QCheckBox(self.layoutWidget)
-        self.checkBox_auto_Flash.setObjectName("checkBox_auto_Flash")
-        self.verticalLayout_3.addWidget(self.checkBox_auto_Flash)
-        self.checkBox_Slient = QtWidgets.QCheckBox(self.layoutWidget)
-        self.checkBox_Slient.setObjectName("checkBox_Slient")
-        self.verticalLayout_3.addWidget(self.checkBox_Slient)
         self.horizontalLayout.addLayout(self.verticalLayout_3)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         self.line = QtWidgets.QFrame(self.layoutWidget)
@@ -62,7 +56,7 @@ class Main_Form(object):
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
         self.layoutWidget1 = QtWidgets.QWidget(self.tab_3)
-        self.layoutWidget1.setGeometry(QtCore.QRect(10, 10, 391, 171))
+        self.layoutWidget1.setGeometry(QtCore.QRect(10, 10, 381, 171))
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.layoutWidget1)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -237,8 +231,14 @@ class Main_Form(object):
         self.gridLayout.addWidget(self.ln_shyc, 2, 1, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout)
         self.conn_db_botton = QtWidgets.QPushButton(self.tab_3)
-        self.conn_db_botton.setGeometry(QtCore.QRect(410, 10, 61, 21))
+        self.conn_db_botton.setGeometry(QtCore.QRect(400, 10, 61, 21))
         self.conn_db_botton.setObjectName("conn_db_botton")
+        self.checkBox_auto_Flash = QtWidgets.QCheckBox(self.tab_3)
+        self.checkBox_auto_Flash.setGeometry(QtCore.QRect(400, 50, 71, 16))
+        self.checkBox_auto_Flash.setObjectName("checkBox_auto_Flash")
+        self.checkBox_Slient = QtWidgets.QCheckBox(self.tab_3)
+        self.checkBox_Slient.setGeometry(QtCore.QRect(400, 70, 47, 16))
+        self.checkBox_Slient.setObjectName("checkBox_Slient")
         self.tabWidget.addTab(self.tab_3, "")
         self.tab_5 = QtWidgets.QWidget()
         self.tab_5.setObjectName("tab_5")
@@ -277,8 +277,6 @@ class Main_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "自动收货发料信息查看器"))
         self.label.setText(_translate("Form", "系统事件监控信息查看器"))
-        self.checkBox_auto_Flash.setText(_translate("Form", "自动刷新"))
-        self.checkBox_Slient.setText(_translate("Form", "静音"))
         self.label_11.setText(_translate("Form", "当前发料时间："))
         self.cpfaliaotime.setText(_translate("Form", "待刷新..."))
         self.label_14.setText(_translate("Form", "LN处理延迟："))
@@ -291,7 +289,9 @@ class Main_Form(object):
         self.sh_ln_clyc.setText(_translate("Form", "待刷新..."))
         self.label_4.setText(_translate("Form", "LN收货延迟："))
         self.ln_shyc.setText(_translate("Form", "待刷新..."))
-        self.conn_db_botton.setText(_translate("Form", "连接数据"))
+        self.conn_db_botton.setText(_translate("Form", "手动刷新"))
+        self.checkBox_auto_Flash.setText(_translate("Form", "自动刷新"))
+        self.checkBox_Slient.setText(_translate("Form", "静音"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("Form", "收发监控"))
         self.label_8.setText(_translate("Form", "待开发..."))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), _translate("Form", "LN序号"))
