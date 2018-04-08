@@ -66,7 +66,7 @@
     </font>
    </property>
    <property name="text">
-    <string>ITX-系统事件监控信息查看器  版本 0.9.2b</string>
+    <string>ITX-系统事件监控信息查看器  版本 1.0.1a</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">
@@ -85,7 +85,7 @@
     <enum>QFrame::Sunken</enum>
    </property>
    <property name="text">
-    <string>本软件使用Python 3.6以及PyQt5进行开发。软件使用GPL协议授权。              问题反馈及源码索取：请发送邮件至 weijj@dflzm.com</string>
+    <string>本软件使用Python 3.6以及PyQt5(GPL)进行开发。                            问题反馈及源码索取：请发送邮件至 weijj@dflzm.com</string>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
