@@ -13,11 +13,11 @@ from PyQt5 import QtWidgets,QtCore
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-import main
-import about
+import data.main
+import data.about
 
 
-class mainshow(QtWidgets.QWidget,main.Main_Form):
+class mainshow(QtWidgets.QWidget,data.main.Main_Form):
     def __init__(self):
         super(mainshow,self).__init__()
         self.setupUi(self)
@@ -76,7 +76,7 @@ class mainshow(QtWidgets.QWidget,main.Main_Form):
     #         print(word)
     #     self.pushButton_2.setDisabled(False)
 
-class About_Window(QWidget,about.About_Dialog):
+class About_Window(QWidget,data.about.About_Dialog):
     def __init__(self, parent=None):
         super(About_Window, self).__init__(parent)
         self.setupUi(self)
