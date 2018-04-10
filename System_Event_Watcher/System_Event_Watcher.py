@@ -29,12 +29,9 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def __init__(self):
         super(mainshow,self).__init__()
         self.setupUi(self)
-        self.conn_db_botton.clicked.connect(self.db_manual)
-        #数据连接,网络测试接入
-
+        self.conn_db_botton.clicked.connect(self.db_manual)#数据连接,网络测试接入
         self.timer = QTimer(self)  #自动刷新定时
         self.timer.timeout.connect(self.autoprdate)
-
         self.checkBox_auto_Flash.stateChanged.connect(self.autoflash) #自动刷新接入
         self.checkBox_Slient.stateChanged.connect(self.noSoung) #静音接入
 
@@ -95,7 +92,6 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         if no_conn == 1: #异常检测
             do = QMessageBox.warning(self,"网络异常","数据获取失败,是否重新连接?",QMessageBox.Retry,QMessageBox.No)
             if do == 524288:
-                #还有BUG
                 no_conn = 0
                 self.db_data_update()
                 self.db_getimg_fail()
@@ -106,17 +102,16 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                     sys.exit(1)
                 else:
                     pass
-
         else:
             pass
-
 
     def prData(self):
         """更新界面数据"""
 
         global faliao_now,faliao_clyc,faliao_flyc,faliao_yc_second
         global shouhuo_now,shouhuo_clyc,shouhuo_shyc,shouhuo_yc_second
-        global shouhuotime,faliaotime,db_stat,song
+        global shouhuotime,faliaotime,db_stat
+        global song
 
 
         time = sf_time_handle()
@@ -151,7 +146,6 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         """报警声音文件"""
         winsound.PlaySound('Feed.wav', winsound.SND_FILENAME|winsound.SND_ASYNC|winsound.SND_NOWAIT)
 
-
     def noSoung(self,state):
         """静音"""
         global song
@@ -159,10 +153,6 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
              song = 1
         else:
              song = 0
-    # def workend(self,ls):
-    #     for word in ls:
-    #         print(word)
-    #     self.pushButton_2.setDisabled(False)
 
 class About_Window(QWidget, UI_about.Ui_Dialog):
     def __init__(self, parent=None):
