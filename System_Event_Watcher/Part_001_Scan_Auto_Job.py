@@ -1,22 +1,28 @@
 # -*- coding: utf-8 -*-
 
-sh = str(gotshouhuo()).split('.')[0]
-cl = str(gotchuli()).split('.')[0]
-fl = str(gotfaliao()).split('.')[0]
-fcl = str(gotfchuli()).split('.')[0]
+from datetime import datetime
 
-t = gotchulis()  # 秒级比较
-f = gotfaliaos()  # 秒级比较
+class sf_time_handle:
 
-self.label_2.setText(str(sh))
-self.label_17.setText(str(fcl))
-self.label_7.setText(str(shouhuoTime[3]))
-self.label_12.setText(str(faliaoTime[1]))
-# self.textBrowser.setText(str(gotcsv()))
-# self.textBrowser_2.setText(str(gotjjk()))
+    def shouhuo_handle(self,shuohuotime,db_stat):
+        if shuohuotime == 0 or db_stat == 1:
+            return 0,0,0,0
+        else:
+            now = shuohuotime[1]
+            lncl = str((datetime.now() - shuohuotime[0])).split('.')[0]
+            lnsh = str((datetime.now() - shuohuotime[1])).split('.')[0]
+            yc_second = (datetime.now() - shuohuotime[0]).total_seconds()
+            return now,lncl,lnsh,yc_second
 
-if t >= 600 or f >= 600:  # 报警声音播放
-    if song == 0:
-        play = threading.Thread(self.waring())
-        play.setDaemon(True)
-        play.start()
+    def faliao_handle(self,faliaotime,db_stat):
+        if faliaotime == 0 or db_stat == 1:
+            return 0,0,0,0
+        else:
+            now = faliaotime[1]
+            lncl = str((datetime.now() - faliaotime[0])).split('.')[0]
+            lnfl = str((datetime.now() - faliaotime[1])).split('.')[0]
+            yc_second = (datetime.now() - faliaotime[0]).total_seconds()
+            return now,lncl,lnfl,yc_second
+
+if __name__=="__main__":
+    test = sf_time_handle()

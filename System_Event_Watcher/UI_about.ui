@@ -44,7 +44,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="aboutRcc.qrc">:/pic/image/about2.jpg</pixmap>
+    <pixmap resource="UI_aboutRcc.qrc">:/pic/image/about2.jpg</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -110,7 +110,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="aboutRcc.qrc">:/pic/image/about1.jpg</pixmap>
+    <pixmap resource="UI_aboutRcc.qrc">:/pic/image/about1.jpg</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -145,7 +145,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="aboutRcc.qrc">:/pic/image/公司LOGO-透明.png</pixmap>
+    <pixmap resource="UI_aboutRcc.qrc">:/pic/image/公司LOGO-透明.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -175,7 +175,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="aboutRcc.qrc"/>
+  <include location="UI_aboutRcc.qrc"/>
  </resources>
  <connections>
   <connection>

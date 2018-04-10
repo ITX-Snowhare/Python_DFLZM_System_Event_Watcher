@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'about.ui'
+# Form implementation generated from reading ui file 'UI_about.ui'
 #
 # Created by: PyQt5 UI code generator 5.10.1
 #
@@ -72,4 +72,4 @@ class Ui_Dialog(object):
         self.pushButton.setText(_translate("Dialog", "确定"))
         self.label_6.setText(_translate("Dialog", "本软件还处于开发阶段，可能还存在较多的问题。本软件适用于监控收货发料，LN序号，各接口的异常预警。"))
 
-import aboutRcc_rc
+import UI_aboutRcc_rc
