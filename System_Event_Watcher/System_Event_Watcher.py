@@ -8,8 +8,10 @@
 
 """
 import sys
+import winsound
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 import threading
 from time import sleep
 
@@ -21,7 +23,7 @@ from Part_001_Scan_Auto_Job import sf_time_handle
 faliao_now = faliao_clyc = faliao_flyc = faliao_yc_second = 0
 shouhuo_now = shouhuo_clyc = shouhuo_shyc = shouhuo_yc_second = 0
 shouhuotime = faliaotime = db_stat = 0
-
+song = 0
 
 class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def __init__(self):
@@ -30,11 +32,11 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         self.conn_db_botton.clicked.connect(self.db_manual)
         #数据连接,网络测试接入
 
-        # self.timer = QTimer(self)  #自动刷新定时(旧的)
-        # self.timer.timeout.connect(self.prData)
+        self.timer = QTimer(self)  #自动刷新定时
+        self.timer.timeout.connect(self.autoprdate)
 
-        # self.checkBox_auto_Flash.stateChanged.connect(self.autoflash) #自动刷新接入
-        # self.checkBox_Slient.stateChanged.connect(self.noSoung) #静音接入
+        self.checkBox_auto_Flash.stateChanged.connect(self.autoflash) #自动刷新接入
+        self.checkBox_Slient.stateChanged.connect(self.noSoung) #静音接入
 
     def db_manual(self):
         """
@@ -42,16 +44,29 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         :return:
         """
         self.manual_lock()
-        db = Db_Contro()
-        db.conn('ln')
-        self.if_net_lost()
         update = threading.Thread(target=self.db_data_update)
         update.start()
-        self.db_getimg_fail(db_stat)
         #update.join()
-        self.prData()
-        release = threading.Thread(target=self.manual_release)
+        self.db_getimg_fail()
+        release = threading.Thread(target=self.manual_release,args=(5,))
         release.start()
+
+    def autoflash(self,state):
+        """自动刷新"""
+        if state == Qt.Checked:
+            self.timer.start(5000)
+            self.manual_lock()
+        else:
+            self.timer.stop()
+            self.manual_release(0)
+
+    def autoprdate(self):
+
+        update = threading.Thread(target=self.db_data_update)
+        update.start()
+        #update.join()
+        self.db_getimg_fail()
+
 
 
     def db_data_update(self):
@@ -59,40 +74,39 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         后台更新数据
         :return:
         """
-
+        global no_conn
         db = Db_Contro()
         db.conn('ln')
-        self.if_net_lost()
         global shouhuotime,faliaotime,db_stat
-        shouhuotime,faliaotime,db_stat = db.get_sfimg()
-
+        shouhuotime,faliaotime,db_stat = db.get_sfimg(no_conn)
+        no_conn = db_stat
         self.prData()
+
 
     def manual_lock(self):
         self.conn_db_botton.setDisabled(True)
 
-    def manual_release(self):
-        sleep(5)
+    def manual_release(self,time):
+        sleep(time)
         self.conn_db_botton.setDisabled(False)
 
-    def if_net_lost(self):
-        if no_conn == 1:
-            QMessageBox.critical(self,"网络连接失败","网络不通或无法连接数据库,程序即将退出")
-            sys.exit(1)
-        else:
-            pass
+    def db_getimg_fail(self):
+        global no_conn
+        if no_conn == 1: #异常检测
+            do = QMessageBox.warning(self,"网络异常","数据获取失败,是否重新连接?",QMessageBox.Retry,QMessageBox.No)
+            if do == 524288:
+                #还有BUG
+                no_conn = 0
+                self.db_data_update()
+                self.db_getimg_fail()
+            else:
+                end = QMessageBox.critical(self,"网络异常","无法获取数据,程序即将退出",QMessageBox.Ok,QMessageBox.No)
+                print(end)
+                if end == 1024:
+                    sys.exit(1)
+                else:
+                    pass
 
-    def db_getimg_fail(self,stat):
-        global db_stat
-        if stat == 1: #异常检测
-            do = QMessageBox.warning(self,"数据获取失败","数据获取失败,是否重新获取?",QMessageBox.Retry,QMessageBox.No)
-            #print(do)
-            while do == 524288 :
-                update = threading.Thread(target=self.db_data_update)
-                update.start()
-                update.join()
-                self.db_getimg_fail(db_stat)
-                do = 0
         else:
             pass
 
@@ -102,49 +116,49 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
 
         global faliao_now,faliao_clyc,faliao_flyc,faliao_yc_second
         global shouhuo_now,shouhuo_clyc,shouhuo_shyc,shouhuo_yc_second
-        global shouhuotime,faliaotime,db_stat
+        global shouhuotime,faliaotime,db_stat,song
 
 
         time = sf_time_handle()
         faliao_now, faliao_clyc, faliao_flyc, faliao_yc_second = time.faliao_handle(faliaotime,db_stat)
         shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second = time.shouhuo_handle(shouhuotime,db_stat)
 
+        warn_time = 600
+
         self.cpfaliaotime.setText(str(faliao_now))
         self.ln_flyc.setText(str(faliao_flyc))
         self.cpshouhuotime.setText(str(shouhuo_now))
         self.ln_shyc.setText(str(shouhuo_shyc))
-        if shouhuo_yc_second >= 600 :
+        if shouhuo_yc_second >= warn_time :
             self.sh_ln_clyc.setText(str(shouhuo_clyc))
             self.sh_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
         else:
             self.sh_ln_clyc.setText(str(shouhuo_clyc))
             self.sh_ln_clyc.setStyleSheet("background-color: none;color:black")
-        if faliao_yc_second >= 600 :
+        if faliao_yc_second >= warn_time :
             self.fl_ln_clyc.setText(str(faliao_clyc))
             self.fl_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
         else:
             self.fl_ln_clyc.setText(str(faliao_clyc))
             self.fl_ln_clyc.setStyleSheet("background-color: none;color:black")
 
-    #
-    # def autoflash(self,state):
-    #     """自动刷新"""
-    #     if state == QtCore.Qt.Checked:
-    #         self.timer.start(10000)
-    #     else:
-    #         self.timer.stop()
-    #
-    # def waring(self):
-    #     """报警声音文件"""
-    #     winsound.PlaySound('Feed.wav', winsound.SND_FILENAME)
-    #
-    # def noSoung(self,state):
-    #     """静音"""
-    #     global song
-    #     if state == QtCore.Qt.Checked:
-    #          song = 1
-    #     else:
-    #          song = 0
+        if shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time:
+            while song == 0:
+                self.waring()
+                sleep(3)
+
+    def waring(self):
+        """报警声音文件"""
+        winsound.PlaySound('Feed.wav', winsound.SND_FILENAME|winsound.SND_ASYNC|winsound.SND_NOWAIT)
+
+
+    def noSoung(self,state):
+        """静音"""
+        global song
+        if state == Qt.Checked:
+             song = 1
+        else:
+             song = 0
     # def workend(self,ls):
     #     for word in ls:
     #         print(word)

@@ -36,7 +36,7 @@ class Db_Contro:
         else:
             no_conn = 1
 
-    def get_sfimg(self):
+    def get_sfimg(self,error):
         """
         连接数据库
         :returns
@@ -48,10 +48,11 @@ class Db_Contro:
 
         global no_conn
 
-        if no_conn == 0:
+        if error == 0:
             try:
                 dbc = cx_Oracle.connect(db_conn)
                 print('数据库已连接！')
+                no_conn = 0
             except:
                 print('网络或数据库异常！')
                 no_conn = 1
@@ -72,6 +73,10 @@ class Db_Contro:
                            'WHERE t$cdate+1/3 >(sysdate-15)'
                            'ORDER BY t$cdate DESC')
             faliao = cursor.fetchone()
+
+            cursor.close()
+            dbc.close()
+
         else:
             shouhuo = (0,0)
             faliao = (0,0)
