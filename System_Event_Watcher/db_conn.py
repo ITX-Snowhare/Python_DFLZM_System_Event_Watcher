@@ -47,6 +47,7 @@ class Db_Contro:
         """
 
         global no_conn
+        global db_conn
 
         if error == 0:
             try:
@@ -83,11 +84,50 @@ class Db_Contro:
 
         return shouhuo,faliao,no_conn
 
+    def get_lnscn(self,error):
+
+        global no_conn
+        global db_conn
+
+        if error == 0:
+            try:
+                dbc = cx_Oracle.connect(db_conn)
+                print('数据库已连接！')
+                no_conn = 0
+            except:
+                print('网络或数据库异常！')
+                no_conn = 1
+                #sys.exit(1)
+
+        if no_conn == 0:
+
+            cursor = dbc.cursor()
+            cursor.execute(
+                'SELECT t$nrgr,t$seri,t$ffno,t$dsca\
+                FROM ttcmcs050302\
+                WHERE t$blck != 1 AND t$ffno > 900000 AND t$seri != \'WPV\'\
+                ORDER BY t$nrgr,t$seri')
+            lnscn = cursor.fetchall()
+            rows = cursor.rowcount
+
+            cursor.close()
+            dbc.close()
+
+            if rows == 0:
+                rows = 1
+                lnscn = [('无数据', '无数据', '无数据', '无数据')]
+
+        else:
+            rows = 1
+            lnscn = [('网络异常', '网络异常', '网络异常', '网络异常')]
+
+        return lnscn,rows,no_conn
+
 
 if __name__=="__main__":
     test = Db_Contro()
     test.conn('ln')
-    a,b,c = test.get_sfimg()
+    a,b,c = test.get_lnscn(0)
     print(a)
     print(b)
     print(c)

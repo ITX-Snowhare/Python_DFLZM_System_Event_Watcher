@@ -20,10 +20,12 @@ import UI_main
 import UI_about
 from db_conn import *
 from Part_001_Scan_Auto_Job import sf_time_handle
+#from Part_002_Wran_LN_SCN import ln_scn_handle
 
 faliao_now = faliao_clyc = faliao_flyc = faliao_yc_second = 0
 shouhuo_now = shouhuo_clyc = shouhuo_shyc = shouhuo_yc_second = 0
 shouhuotime = faliaotime = db_stat = 0
+ln_scn_date = rows = 0
 song = 0
 
 class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
@@ -77,8 +79,6 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         update.start()
         #update.join()
         self.db_getimg_fail()
-
-
 
     def db_data_update(self):
         """
@@ -175,13 +175,19 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
 
     def prLnscn(self):
 
-        self.ln_sncb.setItem(
-
-            # QStandardItem("row %s , column %s" % (11, 11)),
-            # QStandardItem("row %s , column %s" % (11, 11)),
-            # QStandardItem("row %s , column %s" % (11, 11)),
-            # QStandardItem("row %s , column %s" % (11, 11)),
-        )
+        global no_conn
+        db = Db_Contro()
+        db.conn('ln')
+        global ln_scn_date,db_stat,rows
+        ln_scn_date,rows,db_stat = db.get_lnscn(no_conn)
+        no_conn = db_stat
+        #date_handle = ln_scn_handle.get_ln_scn(self,ln_scn_date,rows,db_stat)
+        for row in range(rows):
+            for column in range(4):
+                temp_data = ln_scn_date[row][column]  # 临时记录，不能直接插入表格
+                #data = QTableWidgetItem(str(temp_data))  # 转换后可插入表格
+                data = QStandardItem(str(temp_data))
+                self.ln_sncb.setItem(row, column, data)
 
     def prLnscn_m(self):
 
@@ -189,7 +195,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         update = threading.Thread(target=self.prLnscn,daemon=True)
         update.start()
         #update.join()
-        #self.db_getimg_fail()
+
         release = threading.Thread(target=self.manual_release_scn,args=(5,))
         release.start()
 
