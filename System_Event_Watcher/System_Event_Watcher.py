@@ -29,6 +29,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def __init__(self):
         super(mainshow,self).__init__()
         self.setupUi(self)
+        self.setWindowFlags(Qt.MSWindowsFixedSizeDialogHint|Qt.WindowMinimizeButtonHint)
         self.conn_db_botton.clicked.connect(self.db_manual)#数据连接,网络测试接入
         self.timer = QTimer(self)  #自动刷新定时
         self.timer.timeout.connect(self.autoprdate)
@@ -41,7 +42,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         :return:
         """
         self.manual_lock()
-        update = threading.Thread(target=self.db_data_update)
+        update = threading.Thread(target=self.db_data_update,daemon=True)
         update.start()
         #update.join()
         self.db_getimg_fail()
@@ -59,7 +60,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
 
     def autoprdate(self):
 
-        update = threading.Thread(target=self.db_data_update)
+        update = threading.Thread(target=self.db_data_update,daemon=True)
         update.start()
         #update.join()
         self.db_getimg_fail()
