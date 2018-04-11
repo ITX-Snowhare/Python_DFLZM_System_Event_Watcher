@@ -12,6 +12,7 @@ import winsound
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 import threading
 from time import sleep
 
@@ -39,6 +40,14 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         self.timer.timeout.connect(self.autoprdate)
         self.checkBox_auto_Flash.stateChanged.connect(self.autoflash) #自动刷新接入
         self.checkBox_Slient.stateChanged.connect(self.noSoung) #静音接入
+
+        self.ln_sncb=QStandardItemModel(0,4);
+        self.ln_sncb.setHorizontalHeaderLabels(['编号组', '系列', '第一个空号', '系列说明'])
+        self.ln_snc.setModel(self.ln_sncb)
+        self.ln_snc.horizontalHeader().setStretchLastSection(True)
+        self.ln_snc.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.ln_scn_db_mu.clicked.connect(self.prLnscn_m)
+        #self.prLnscn()
 
     def db_manual(self):
         """
@@ -164,10 +173,40 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         else:
              song = 0
 
+    def prLnscn(self):
+
+        self.ln_sncb.setItem(
+
+            # QStandardItem("row %s , column %s" % (11, 11)),
+            # QStandardItem("row %s , column %s" % (11, 11)),
+            # QStandardItem("row %s , column %s" % (11, 11)),
+            # QStandardItem("row %s , column %s" % (11, 11)),
+        )
+
+    def prLnscn_m(self):
+
+        self.manual_lock_scn()
+        update = threading.Thread(target=self.prLnscn,daemon=True)
+        update.start()
+        #update.join()
+        #self.db_getimg_fail()
+        release = threading.Thread(target=self.manual_release_scn,args=(5,))
+        release.start()
+
+    def manual_lock_scn(self):
+        self.ln_scn_db_mu.setDisabled(True)
+
+    def manual_release_scn(self,time):
+        sleep(time)
+        self.ln_scn_db_mu.setDisabled(False)
+
 class About_Window(QWidget, UI_about.Ui_Dialog):
     def __init__(self, parent=None):
         super(About_Window, self).__init__(parent)
         self.setupUi(self)
+        #QApplication.setStyle('Fusion')
+        self.setWindowFlags(Qt.MSWindowsFixedSizeDialogHint|Qt.CustomizeWindowHint)
+
     def handle_click(self):
         if not self.isVisible():
             self.show()
