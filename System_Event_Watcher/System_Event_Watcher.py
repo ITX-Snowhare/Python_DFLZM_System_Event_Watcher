@@ -29,7 +29,11 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def __init__(self):
         super(mainshow,self).__init__()
         self.setupUi(self)
-        self.setWindowFlags(Qt.MSWindowsFixedSizeDialogHint|Qt.WindowMinimizeButtonHint)
+
+        QApplication.setStyle('Fusion')
+
+        self.setWindowFlags(Qt.MSWindowsFixedSizeDialogHint\
+                            |Qt.WindowMinimizeButtonHint|Qt.WindowCloseButtonHint)
         self.conn_db_botton.clicked.connect(self.db_manual)#数据连接,网络测试接入
         self.timer = QTimer(self)  #自动刷新定时
         self.timer.timeout.connect(self.autoprdate)
@@ -91,13 +95,15 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def db_getimg_fail(self):
         global no_conn
         if no_conn == 1: #异常检测
-            do = QMessageBox.warning(self,"网络异常","数据获取失败,是否重新连接?",QMessageBox.Retry,QMessageBox.No)
+            do = QMessageBox.warning(self,"网络异常","数据获取失败,是否重新连接?",\
+                                     QMessageBox.Retry,QMessageBox.No)
             if do == 524288:
                 no_conn = 0
                 self.db_data_update()
                 self.db_getimg_fail()
             else:
-                end = QMessageBox.critical(self,"网络异常","无法获取数据,程序即将退出",QMessageBox.Ok,QMessageBox.No)
+                end = QMessageBox.critical(self,"网络异常","无法获取数据,程序即将退出",\
+                                           QMessageBox.Ok,QMessageBox.No)
                 print(end)
                 if end == 1024:
                     sys.exit(1)
@@ -116,8 +122,10 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
 
 
         time = sf_time_handle()
-        faliao_now, faliao_clyc, faliao_flyc, faliao_yc_second = time.faliao_handle(faliaotime,db_stat)
-        shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second = time.shouhuo_handle(shouhuotime,db_stat)
+        faliao_now, faliao_clyc, faliao_flyc, faliao_yc_second\
+            = time.faliao_handle(faliaotime,db_stat)
+        shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second\
+            = time.shouhuo_handle(shouhuotime,db_stat)
 
         warn_time = 600
 
@@ -145,7 +153,8 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
 
     def waring(self):
         """报警声音文件"""
-        winsound.PlaySound('Feed.wav', winsound.SND_FILENAME|winsound.SND_ASYNC|winsound.SND_NOWAIT)
+        winsound.PlaySound('Feed.wav', \
+                           winsound.SND_FILENAME|winsound.SND_ASYNC|winsound.SND_NOWAIT)
 
     def noSoung(self,state):
         """静音"""
