@@ -67,18 +67,21 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def autoflash(self,state):
         """自动刷新"""
         if state == Qt.Checked:
-            self.timer.start(5000)
+            self.timer.start(10000)
             self.manual_lock()
         else:
             self.timer.stop()
             self.manual_release(0)
 
     def autoprdate(self):
-
-        update = threading.Thread(target=self.db_data_update,daemon=True)
-        update.start()
-        #update.join()
-        self.db_getimg_fail()
+        global no_conn
+        if no_conn == 0:
+            update = threading.Thread(target=self.db_data_update,daemon=True)
+            update.start()
+            #update.join()
+            self.db_getimg_fail()
+        else:
+            pass
 
     def db_data_update(self):
         """

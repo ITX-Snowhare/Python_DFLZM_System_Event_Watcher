@@ -92,10 +92,10 @@ class Db_Contro:
         if error == 0:
             try:
                 dbc = cx_Oracle.connect(db_conn)
-                print('数据库已连接！')
+                #print('数据库已连接！')
                 no_conn = 0
             except:
-                print('网络或数据库异常！')
+                #print('网络或数据库异常！')
                 no_conn = 1
                 #sys.exit(1)
 
