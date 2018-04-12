@@ -79,9 +79,9 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             update = threading.Thread(target=self.db_data_update,daemon=True)
             update.start()
             #update.join()
-            self.db_getimg_fail()
         else:
             pass
+        self.db_getimg_fail()
 
     def db_data_update(self):
         """
