@@ -67,7 +67,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def autoflash(self,state):
         """自动刷新"""
         if state == Qt.Checked:
-            self.timer.start(10000)
+            self.timer.start(5000)
             self.manual_lock()
         else:
             self.timer.stop()
@@ -139,7 +139,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second\
             = time.shouhuo_handle(shouhuotime,db_stat)
 
-        warn_time = 600
+        warn_time = 600 #报警条件
 
         self.cpfaliaotime.setText(str(faliao_now))
         self.ln_flyc.setText(str(faliao_flyc))
@@ -158,15 +158,23 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             self.fl_ln_clyc.setText(str(faliao_clyc))
             self.fl_ln_clyc.setStyleSheet("background-color: none;color:black")
 
-        if shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time:
-            while song == 0:
-                self.waring()
-                sleep(3)
-
-    def waring(self):
-        """报警声音文件"""
-        winsound.PlaySound('Feed.wav', \
-                           winsound.SND_FILENAME|winsound.SND_ASYNC|winsound.SND_NOWAIT)
+        if song == 0 and (shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time):
+            winsound.PlaySound('Feed.wav', \
+                                        winsound.SND_FILENAME|winsound.SND_ASYNC|winsound.SND_NOWAIT)
+    #         song_play = threading.Thread(target=self.waring, daemon=True,args=(warn_time,),name='p_warn')
+    #         if song_play.is_alive():
+    #             pass
+    #         else:
+    #             song_play.start()
+    #
+    # def waring(self,time):
+    #     """报警声音文件"""
+    #     wtime = time
+    #     global song,shouhuo_yc_second,faliao_yc_second
+    #     while song == 0 and (shouhuo_yc_second >= wtime or faliao_yc_second >= wtime):
+    #         winsound.PlaySound('Feed.wav', \
+    #                        winsound.SND_FILENAME|winsound.SND_ASYNC|winsound.SND_NOWAIT)
+    #         sleep(3)
 
     def noSoung(self,state):
         """静音"""
