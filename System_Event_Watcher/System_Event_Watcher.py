@@ -176,10 +176,10 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
 
             warn_time = 600 #报警条件，单位是秒
 
-            save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
-                       + ',' + 'shouhuo_yc_second: ' + str(shouhuo_yc_second)\
-                       + ',' + 'db_stat: ' + str(db_stat)
-            logger.info(save_log)
+            # save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
+            #            + ',' + 'shouhuo_yc_second: ' + str(shouhuo_yc_second)\
+            #            + ',' + 'db_stat: ' + str(db_stat)
+            # logger.info(save_log)
         except:
             logger.exception("Exception Logged")
 
