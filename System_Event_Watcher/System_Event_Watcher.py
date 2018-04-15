@@ -8,6 +8,7 @@
 
 """
 import sys
+import os
 import winsound
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
@@ -23,7 +24,6 @@ from Part_001_Scan_Auto_Job import sf_time_handle
 #from Part_002_Wran_LN_SCN import ln_scn_handle
 
 import logging
-from datetime import datetime
 
 faliao_now = faliao_clyc = faliao_flyc = faliao_yc_second = 0
 shouhuo_now = shouhuo_clyc = shouhuo_shyc = shouhuo_yc_second = 0
@@ -31,8 +31,22 @@ shouhuotime = faliaotime = db_stat = 0
 ln_scn_date = rows = 0
 song = 0
 
-LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
-logging.basicConfig(filename='log.log', level=logging.INFO, format=LOG_FORMAT)
+LOG_FORMAT = "%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s"
+logger = logging.getLogger('mylogger')
+logger.setLevel(logging.DEBUG)
+
+fh = logging.FileHandler(os.path.join(os.getcwd(), 'log.txt'))
+fh.setLevel(logging.DEBUG)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter('%(asctime)s - %(module)s.%(funcName)s.%(lineno)d - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 
 class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
@@ -82,6 +96,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
 
     def autoprdate(self):
         global no_conn
+        logger.info(no_conn)
         if no_conn == 0:
             update = threading.Thread(target=self.db_data_update,daemon=True)
             update.start()
@@ -146,39 +161,45 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second\
             = time.shouhuo_handle(shouhuotime,db_stat)
 
-        warn_time = 1 #报警条件
+        warn_time = 600 #报警条件，单位是秒
 
-        self.cpfaliaotime.setText(str(faliao_now))
-        self.ln_flyc.setText(str(faliao_flyc))
-        self.cpshouhuotime.setText(str(shouhuo_now))
-        self.ln_shyc.setText(str(shouhuo_shyc))
-        if shouhuo_yc_second >= warn_time :
-            self.sh_ln_clyc.setText(str(shouhuo_clyc))
-            self.sh_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
-        else:
-            self.sh_ln_clyc.setText(str(shouhuo_clyc))
-            self.sh_ln_clyc.setStyleSheet("background-color: none;color:black")
-        if faliao_yc_second >= warn_time :
-            self.fl_ln_clyc.setText(str(faliao_clyc))
-            self.fl_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
-        else:
-            self.fl_ln_clyc.setText(str(faliao_clyc))
-            self.fl_ln_clyc.setStyleSheet("background-color: none;color:black")
+        logger.info(faliao_yc_second,shouhuo_yc_second,db_stat)
 
-        if song == 0 and (shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time):
-            self.waring()
+        try:
 
-        if shouhuo_yc_second >= warn_time:
-            logging.warning('收货处理时间超时')
+            self.cpfaliaotime.setText(str(faliao_now))
+            self.ln_flyc.setText(str(faliao_flyc))
+            self.cpshouhuotime.setText(str(shouhuo_now))
+            self.ln_shyc.setText(str(shouhuo_shyc))
+            if shouhuo_yc_second >= warn_time :
+                self.sh_ln_clyc.setText(str(shouhuo_clyc))
+                self.sh_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
+            else:
+                self.sh_ln_clyc.setText(str(shouhuo_clyc))
+                self.sh_ln_clyc.setStyleSheet("background-color: none;color:black")
+            if faliao_yc_second >= warn_time :
+                self.fl_ln_clyc.setText(str(faliao_clyc))
+                self.fl_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
+            else:
+                self.fl_ln_clyc.setText(str(faliao_clyc))
+                self.fl_ln_clyc.setStyleSheet("background-color: none;color:black")
 
-        if faliao_yc_second >= warn_time:
-            logging.warning('发料处理时间超时')
-    #         song_play = threading.Thread(target=self.waring, daemon=True,args=(warn_time,),name='p_warn')
-    #         if song_play.is_alive():
-    #             pass
-    #         else:
-    #             song_play.start()
-    #
+            if song == 0 and (shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time):
+                self.waring()
+
+            if shouhuo_yc_second >= warn_time:
+                logger.warning('收货处理时间超时')
+
+            if faliao_yc_second >= warn_time:
+                logger.warning('发料处理时间超时')
+        #         song_play = threading.Thread(target=self.waring, daemon=True,args=(warn_time,),name='p_warn')
+        #         if song_play.is_alive():
+        #             pass
+        #         else:
+        #             song_play.start()
+        except:
+            logger.exception("Exception Logged")
+            #
     def waring(self):
     #     """报警声音文件"""
         winsound.PlaySound('Feed.wav', \
