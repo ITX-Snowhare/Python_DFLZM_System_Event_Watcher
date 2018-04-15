@@ -24,6 +24,7 @@ from Part_001_Scan_Auto_Job import sf_time_handle
 #from Part_002_Wran_LN_SCN import ln_scn_handle
 
 import logging
+from logging.handlers import TimedRotatingFileHandler
 
 faliao_now = faliao_clyc = faliao_flyc = faliao_yc_second = 0
 shouhuo_now = shouhuo_clyc = shouhuo_shyc = shouhuo_yc_second = 0
@@ -37,6 +38,7 @@ logger.setLevel(logging.DEBUG)
 
 fh = logging.FileHandler(os.path.join(os.getcwd(), 'log.txt'))
 fh.setLevel(logging.DEBUG)
+fh = TimedRotatingFileHandler('log.txt',when='D',interval=1,backupCount=10)
 
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
@@ -97,13 +99,17 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def autoprdate(self):
         global no_conn
         logger.info(no_conn)
-        if no_conn == 0:
-            update = threading.Thread(target=self.db_data_update,daemon=True)
-            update.start()
-            #update.join()
-        else:
-            pass
-        self.db_getimg_fail()
+
+        try:
+            if no_conn == 0:
+                update = threading.Thread(target=self.db_data_update,daemon=True)
+                update.start()
+                #update.join()
+            else:
+                pass
+            self.db_getimg_fail()
+        except:
+            logger.exception("Exception Logged")
 
     def db_data_update(self):
         """
@@ -114,7 +120,10 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         db = Db_Contro()
         db.conn('ln')
         global shouhuotime,faliaotime,db_stat
-        shouhuotime,faliaotime,db_stat = db.get_sfimg(no_conn)
+        try:
+            shouhuotime,faliaotime,db_stat = db.get_sfimg(no_conn)
+        except:
+            logger.exception("Exception Logged")
         no_conn = db_stat
         self.prData()
 
@@ -163,7 +172,11 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
 
         warn_time = 600 #报警条件，单位是秒
 
-        logger.info(faliao_yc_second,shouhuo_yc_second,db_stat)
+        save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
+                   + ',' + 'shouhuo_yc_second: ' + str(shouhuo_yc_second)\
+                   + ',' + 'db_stat: ' + str(db_stat)
+        logger.info(save_log)
+
 
         try:
 
