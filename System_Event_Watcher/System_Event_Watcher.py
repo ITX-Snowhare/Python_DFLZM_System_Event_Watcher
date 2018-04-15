@@ -21,7 +21,6 @@ import UI_main
 import UI_about
 from db_conn import *
 from Part_001_Scan_Auto_Job import sf_time_handle
-#from Part_002_Wran_LN_SCN import ln_scn_handle
 
 import logging
 from logging.handlers import TimedRotatingFileHandler
@@ -31,6 +30,7 @@ shouhuo_now = shouhuo_clyc = shouhuo_shyc = shouhuo_yc_second = 0
 shouhuotime = faliaotime = db_stat = 0
 ln_scn_date = rows = 0
 song = 0
+autof = 1
 
 LOG_FORMAT = "%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s"
 logger = logging.getLogger('mylogger')
@@ -61,8 +61,8 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         self.setWindowFlags(Qt.MSWindowsFixedSizeDialogHint\
                             |Qt.WindowMinimizeButtonHint|Qt.WindowCloseButtonHint)
         self.conn_db_botton.clicked.connect(self.db_manual)#数据连接,网络测试接入
-        self.timer = QTimer(self)  #自动刷新定时
-        self.timer.timeout.connect(self.autoprdate)
+        # self.timer = QTimer(self)  #自动刷新定时
+        # self.timer.timeout.connect(self.autoprdate)
         self.checkBox_auto_Flash.stateChanged.connect(self.autoflash) #自动刷新接入
         self.checkBox_Slient.stateChanged.connect(self.noSoung) #静音接入
 
@@ -72,6 +72,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         self.ln_snc.horizontalHeader().setStretchLastSection(True)
         self.ln_snc.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.ln_scn_db_mu.clicked.connect(self.prLnscn_m)
+
         #self.prLnscn()
 
     def db_manual(self):
@@ -80,36 +81,39 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         :return:
         """
         self.manual_lock()
-        update = threading.Thread(target=self.db_data_update,daemon=True)
-        update.start()
+        # update = threading.Thread(target=self.db_data_update,daemon=True)
+        # update.start()
         #update.join()
         self.db_getimg_fail()
-        release = threading.Thread(target=self.manual_release,args=(5,))
-        release.start()
+        # release = threading.Thread(target=self.manual_release,args=(5,))
+        # release.start()
+        autoupdate = threading.Thread(target=self.autoprdate, daemon=True)
+        autoupdate.start()
 
-    def autoflash(self,state):
-        """自动刷新"""
-        if state == Qt.Checked:
-            self.timer.start(5000)
-            self.manual_lock()
-        else:
-            self.timer.stop()
-            self.manual_release(0)
+    # def autoflash(self,state):
+    #     """自动刷新"""
+    #     if state == Qt.Checked:
+    #         self.timer.start(5000)
+    #         self.manual_lock()
+    #     else:
+    #         self.timer.stop()
+    #         self.manual_release(0)
 
     def autoprdate(self):
-        global no_conn
-        logger.info(no_conn)
 
-        try:
-            if no_conn == 0:
-                update = threading.Thread(target=self.db_data_update,daemon=True)
-                update.start()
-                #update.join()
-            else:
-                pass
-            self.db_getimg_fail()
-        except:
-            logger.exception("Exception Logged")
+        global no_conn
+        global autof
+        while autof:
+            db = Db_Contro()
+            db.conn('ln')
+            global shouhuotime,faliaotime,db_stat
+            try:
+                shouhuotime,faliaotime,db_stat = db.get_sfimg(no_conn)
+            except:
+                logger.exception("Exception Logged")
+            no_conn = db_stat
+            self.prData()
+            sleep(5)
 
     def db_data_update(self):
         """
@@ -163,19 +167,21 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         global shouhuotime,faliaotime,db_stat
         global song
 
+        try:
+            time = sf_time_handle()
+            faliao_now, faliao_clyc, faliao_flyc, faliao_yc_second\
+                = time.faliao_handle(faliaotime,db_stat)
+            shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second\
+                = time.shouhuo_handle(shouhuotime,db_stat)
 
-        time = sf_time_handle()
-        faliao_now, faliao_clyc, faliao_flyc, faliao_yc_second\
-            = time.faliao_handle(faliaotime,db_stat)
-        shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second\
-            = time.shouhuo_handle(shouhuotime,db_stat)
+            warn_time = 600 #报警条件，单位是秒
 
-        warn_time = 600 #报警条件，单位是秒
-
-        save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
-                   + ',' + 'shouhuo_yc_second: ' + str(shouhuo_yc_second)\
-                   + ',' + 'db_stat: ' + str(db_stat)
-        logger.info(save_log)
+            save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
+                       + ',' + 'shouhuo_yc_second: ' + str(shouhuo_yc_second)\
+                       + ',' + 'db_stat: ' + str(db_stat)
+            logger.info(save_log)
+        except:
+            logger.exception("Exception Logged")
 
 
         try:
@@ -231,6 +237,17 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
              song = 1
         else:
              song = 0
+
+    def autoflash(self,state):
+        """静音"""
+        global autof
+        if state == Qt.Checked:
+            autof = 1
+            self.manual_lock()
+            self.db_manual()
+        else:
+            autof = 0
+            self.manual_release(0)
 
     def prLnscn(self):
 

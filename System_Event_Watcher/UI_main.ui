@@ -123,7 +123,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>手动刷新</string>
+         <string>开始刷新</string>
         </property>
        </widget>
        <widget class="QCheckBox" name="checkBox_auto_Flash">
@@ -135,8 +135,17 @@
           <height>16</height>
          </rect>
         </property>
+        <property name="tabletTracking">
+         <bool>false</bool>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>自动刷新</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="QCheckBox" name="checkBox_Slient">

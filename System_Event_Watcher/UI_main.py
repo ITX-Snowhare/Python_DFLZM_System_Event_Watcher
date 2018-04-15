@@ -60,6 +60,9 @@ class Ui_Form(object):
         self.conn_db_botton.setObjectName("conn_db_botton")
         self.checkBox_auto_Flash = QtWidgets.QCheckBox(self.tab_3)
         self.checkBox_auto_Flash.setGeometry(QtCore.QRect(400, 50, 71, 16))
+        self.checkBox_auto_Flash.setTabletTracking(False)
+        self.checkBox_auto_Flash.setAcceptDrops(False)
+        self.checkBox_auto_Flash.setChecked(True)
         self.checkBox_auto_Flash.setObjectName("checkBox_auto_Flash")
         self.checkBox_Slient = QtWidgets.QCheckBox(self.tab_3)
         self.checkBox_Slient.setGeometry(QtCore.QRect(400, 70, 47, 16))
@@ -279,7 +282,7 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "系统事件信息查看器"))
         self.label.setText(_translate("Form", "系统事件信息查看器"))
-        self.conn_db_botton.setText(_translate("Form", "手动刷新"))
+        self.conn_db_botton.setText(_translate("Form", "开始刷新"))
         self.checkBox_auto_Flash.setText(_translate("Form", "自动刷新"))
         self.checkBox_Slient.setText(_translate("Form", "静音"))
         self.label_6.setText(_translate("Form", "当前收货时间："))
