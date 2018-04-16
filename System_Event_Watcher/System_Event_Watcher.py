@@ -113,7 +113,6 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                 logger.exception("Exception Logged")
             no_conn = db_stat
             self.prData()
-            self.db_getimg_fail()
             sleep(5)
 
     def db_data_update(self):
@@ -143,6 +142,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def db_getimg_fail(self):
         global no_conn
         if no_conn == 1: #异常检测
+            logger.warning('网络异常，连接不到数据库')
             do = QMessageBox.warning(self,"网络异常","数据获取失败,是否重新连接?",\
                                      QMessageBox.Retry,QMessageBox.No)
             if do == 524288:
@@ -174,7 +174,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                 = time.faliao_handle(faliaotime,db_stat)
             shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second\
                 = time.shouhuo_handle(shouhuotime,db_stat)
-
+            self.db_getimg_fail()
             warn_time = 600 #报警条件，单位是秒
 
             # save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
