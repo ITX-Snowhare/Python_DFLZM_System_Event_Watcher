@@ -113,6 +113,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                 logger.exception("Exception Logged")
             no_conn = db_stat
             self.prData()
+            self.db_getimg_fail()
             sleep(5)
 
     def db_data_update(self):
