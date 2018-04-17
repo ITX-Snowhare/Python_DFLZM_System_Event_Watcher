@@ -241,8 +241,10 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             #
     def waring(self):
     #     """报警声音文件"""
-        global song
+        global song,no_conn
         while song == 0:
+            if no_conn == 0:
+                break
             winsound.PlaySound('Feed.wav', \
                        winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_NOWAIT)
             sleep(3)
