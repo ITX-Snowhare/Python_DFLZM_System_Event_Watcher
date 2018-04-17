@@ -59,28 +59,33 @@ class Db_Contro:
                 no_conn = 1
                 #sys.exit(1)
 
-        if no_conn == 0:
+        try:
+            if no_conn == 0:
 
-            cursor = dbc.cursor()
-            cursor.execute(
-                'SELECT t$ddt+1/3,TO_DATE( substr(TRIM(t$dsca),-18,14) ,\'yyyy/mm/dd hh24:mi:ss\') '
-                'FROM ttiliu039302 '
-                'WHERE t$ddt+1/3 >(sysdate-15) '
-                'ORDER BY t$ddt  DESC')
-            shouhuo = cursor.fetchone()
+                cursor = dbc.cursor()
+                cursor.execute(
+                    'SELECT t$ddt+1/3,TO_DATE( substr(TRIM(t$dsca),-18,14) ,\'yyyy/mm/dd hh24:mi:ss\') '
+                    'FROM ttiliu039302 '
+                    'WHERE t$ddt+1/3 >(sysdate-15) '
+                    'ORDER BY t$ddt  DESC')
+                shouhuo = cursor.fetchone()
 
-            cursor.execute('SELECT t$cdate+1/3,t$date+1/3 '
-                           'FROM ttiliu056302 '
-                           'WHERE t$cdate+1/3 >(sysdate-15)'
-                           'ORDER BY t$cdate DESC')
-            faliao = cursor.fetchone()
+                cursor.execute('SELECT t$cdate+1/3,t$date+1/3 '
+                               'FROM ttiliu056302 '
+                               'WHERE t$cdate+1/3 >(sysdate-15)'
+                               'ORDER BY t$cdate DESC')
+                faliao = cursor.fetchone()
 
-            cursor.close()
-            dbc.close()
+                cursor.close()
+                dbc.close()
 
-        else:
-            shouhuo = (0,0)
-            faliao = (0,0)
+            else:
+                shouhuo = (0,0)
+                faliao = (0,0)
+        except:
+            no_conn = 1
+            shouhuo = (0, 0)
+            faliao = (0, 0)
 
         return shouhuo,faliao,no_conn
 
