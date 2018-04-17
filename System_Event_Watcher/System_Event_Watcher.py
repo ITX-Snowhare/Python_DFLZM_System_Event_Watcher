@@ -56,16 +56,19 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         super(mainshow,self).__init__()
         self.setupUi(self)
 
+        #界面风格
         QApplication.setStyle('Fusion')
-
         self.setWindowFlags(Qt.MSWindowsFixedSizeDialogHint\
                             |Qt.WindowMinimizeButtonHint|Qt.WindowCloseButtonHint)
-        self.conn_db_botton.clicked.connect(self.db_manual)#数据连接,网络测试接入
+
+        #监控收货发料界面：
+        self.conn_db_botton.clicked.connect(self.db_manual)#开始刷新的按钮功能
         # self.timer = QTimer(self)  #自动刷新定时
         # self.timer.timeout.connect(self.autoprdate)
-        self.checkBox_auto_Flash.stateChanged.connect(self.autoflash) #自动刷新接入
-        self.checkBox_Slient.stateChanged.connect(self.noSoung) #静音接入
+        self.checkBox_auto_Flash.stateChanged.connect(self.autoflash) #自动刷新开关
+        self.checkBox_Slient.stateChanged.connect(self.noSoung) #静音开关
 
+        #LN序号界面代码：
         self.ln_sncb=QStandardItemModel(0,4);
         self.ln_sncb.setHorizontalHeaderLabels(['编号组', '系列', '第一个空号', '系列说明'])
         self.ln_snc.setModel(self.ln_sncb)
@@ -73,18 +76,16 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         self.ln_snc.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.ln_scn_db_mu.clicked.connect(self.prLnscn_m)
 
-        #self.prLnscn()
-
     def db_manual(self):
         """
-        手动刷新界面(收货发料)
-        :return:
+        开始刷新界面(收货发料)
         """
         self.manual_lock()
         # update = threading.Thread(target=self.db_data_update,daemon=True)
         # update.start()
-        #update.join()
-        self.db_getimg_fail()
+        # update.join()
+        if no_conn == 1:
+            self.db_getimg_fail()
         # release = threading.Thread(target=self.manual_release,args=(5,))
         # release.start()
         autoupdate = threading.Thread(target=self.autoprdate, daemon=True)
@@ -103,7 +104,8 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
 
         global no_conn
         global autof
-        while autof:
+        #self.db_getimg_fail()
+        while autof and no_conn == 0:
             db = Db_Contro()
             db.conn('ln')
             global shouhuotime,faliaotime,db_stat
@@ -114,6 +116,9 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             no_conn = db_stat
             self.prData()
             sleep(5)
+
+
+
 
     def db_data_update(self):
         """
@@ -147,8 +152,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                                      QMessageBox.Retry,QMessageBox.No)
             if do == 524288:
                 no_conn = 0
-                self.db_data_update()
-                self.db_getimg_fail()
+                self.db_manual()
             else:
                 end = QMessageBox.critical(self,"网络异常","无法获取数据,程序即将退出",\
                                            QMessageBox.Ok,QMessageBox.No)
@@ -166,15 +170,16 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         global faliao_now,faliao_clyc,faliao_flyc,faliao_yc_second
         global shouhuo_now,shouhuo_clyc,shouhuo_shyc,shouhuo_yc_second
         global shouhuotime,faliaotime,db_stat
-        global song
+        global song,no_conn
 
         try:
+
             time = sf_time_handle()
             faliao_now, faliao_clyc, faliao_flyc, faliao_yc_second\
                 = time.faliao_handle(faliaotime,db_stat)
             shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second\
                 = time.shouhuo_handle(shouhuotime,db_stat)
-            self.db_getimg_fail()
+            #self.db_getimg_fail()
             warn_time = 600 #报警条件，单位是秒
 
             # save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
@@ -184,9 +189,9 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         except:
             logger.exception("Exception Logged")
 
-
         try:
 
+            self.db_getimg_fail()
             self.cpfaliaotime.setText(str(faliao_now))
             self.ln_flyc.setText(str(faliao_flyc))
             self.cpshouhuotime.setText(str(shouhuo_now))
