@@ -84,10 +84,11 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         # update = threading.Thread(target=self.db_data_update,daemon=True)
         # update.start()
         # update.join()
-        if no_conn == 1:
-            self.db_getimg_fail()
+        # if no_conn == 1:
+        #     self.db_getimg_fail()
         # release = threading.Thread(target=self.manual_release,args=(5,))
         # release.start()
+        self.db_getimg_fail()
         autoupdate = threading.Thread(target=self.autoprdate, daemon=True)
         autoupdate.start()
 
@@ -105,7 +106,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         global no_conn
         global autof
         #self.db_getimg_fail()
-        while autof and no_conn == 0:
+        while autof:
             db = Db_Contro()
             db.conn('ln')
             global shouhuotime,faliaotime,db_stat
@@ -115,6 +116,9 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                 logger.exception("Exception Logged")
             no_conn = db_stat
             self.prData()
+            if no_conn == 1:
+                raise ValueError("网络异常，无法正常获取数据库数据")
+
             sleep(5)
 
 
@@ -152,11 +156,10 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                                      QMessageBox.Retry,QMessageBox.No)
             if do == 524288:
                 no_conn = 0
-                self.db_manual()
+                self.manual_release(0)
             else:
                 end = QMessageBox.critical(self,"网络异常","无法获取数据,程序即将退出",\
                                            QMessageBox.Ok,QMessageBox.No)
-                print(end)
                 if end == 1024:
                     sys.exit(1)
                 else:
@@ -189,41 +192,51 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         except:
             logger.exception("Exception Logged")
 
-        try:
+        if faliao_clyc ==0 and  shouhuo_clyc == 0:
+            self.sh_ln_clyc.setText(str('网络异常，请重新刷新！'))
+            self.fl_ln_clyc.setText(str('网络异常，请重新刷新！'))
+            self.sh_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
+            self.fl_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
+            self.waring()
+            logger.warning('网络异常，无法获取数据库数据')
+            self.manual_release(0)
+        else:
 
-            self.db_getimg_fail()
-            self.cpfaliaotime.setText(str(faliao_now))
-            self.ln_flyc.setText(str(faliao_flyc))
-            self.cpshouhuotime.setText(str(shouhuo_now))
-            self.ln_shyc.setText(str(shouhuo_shyc))
-            if shouhuo_yc_second >= warn_time :
-                self.sh_ln_clyc.setText(str(shouhuo_clyc))
-                self.sh_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
-            else:
-                self.sh_ln_clyc.setText(str(shouhuo_clyc))
-                self.sh_ln_clyc.setStyleSheet("background-color: none;color:black")
-            if faliao_yc_second >= warn_time :
-                self.fl_ln_clyc.setText(str(faliao_clyc))
-                self.fl_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
-            else:
-                self.fl_ln_clyc.setText(str(faliao_clyc))
-                self.fl_ln_clyc.setStyleSheet("background-color: none;color:black")
+            try:
 
-            if song == 0 and (shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time):
-                self.waring()
 
-            if shouhuo_yc_second >= warn_time:
-                logger.warning('收货处理时间超时')
+                self.cpfaliaotime.setText(str(faliao_now))
+                self.ln_flyc.setText(str(faliao_flyc))
+                self.cpshouhuotime.setText(str(shouhuo_now))
+                self.ln_shyc.setText(str(shouhuo_shyc))
+                if shouhuo_yc_second >= warn_time :
+                    self.sh_ln_clyc.setText(str(shouhuo_clyc))
+                    self.sh_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
+                else:
+                    self.sh_ln_clyc.setText(str(shouhuo_clyc))
+                    self.sh_ln_clyc.setStyleSheet("background-color: none;color:black")
+                if faliao_yc_second >= warn_time :
+                    self.fl_ln_clyc.setText(str(faliao_clyc))
+                    self.fl_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
+                else:
+                    self.fl_ln_clyc.setText(str(faliao_clyc))
+                    self.fl_ln_clyc.setStyleSheet("background-color: none;color:black")
 
-            if faliao_yc_second >= warn_time:
-                logger.warning('发料处理时间超时')
-        #         song_play = threading.Thread(target=self.waring, daemon=True,args=(warn_time,),name='p_warn')
-        #         if song_play.is_alive():
-        #             pass
-        #         else:
-        #             song_play.start()
-        except:
-            logger.exception("Exception Logged")
+                if song == 0 and (shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time):
+                    self.waring()
+
+                if shouhuo_yc_second >= warn_time:
+                    logger.warning('收货处理时间超时')
+
+                if faliao_yc_second >= warn_time:
+                    logger.warning('发料处理时间超时')
+            #         song_play = threading.Thread(target=self.waring, daemon=True,args=(warn_time,),name='p_warn')
+            #         if song_play.is_alive():
+            #             pass
+            #         else:
+            #             song_play.start()
+            except:
+                logger.exception("Exception Logged")
             #
     def waring(self):
     #     """报警声音文件"""
