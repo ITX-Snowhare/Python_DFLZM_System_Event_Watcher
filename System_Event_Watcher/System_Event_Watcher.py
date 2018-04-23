@@ -197,7 +197,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             self.fl_ln_clyc.setText(str('网络异常，请重新刷新！'))
             self.sh_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
             self.fl_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
-            playWaring = threading.Thread(target=self.waring, daemon=True)
+            playWaring = threading.Thread(target=self.waring, daemon=True,args=(1,))
             playWaring.start()
             logger.warning('网络异常，无法获取数据库数据')
             self.manual_release(0)
@@ -224,7 +224,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                     self.fl_ln_clyc.setStyleSheet("background-color: none;color:black")
 
                 if song == 0 and (shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time):
-                    self.waring()
+                    self.waring(0)
 
                 if shouhuo_yc_second >= warn_time:
                     logger.warning('收货处理时间超时')
@@ -239,14 +239,20 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             except:
                 logger.exception("Exception Logged")
             #
-    def waring(self):
+    def waring(self,option):
     #     """报警声音文件"""
         global song,no_conn
         while song == 0:
-            if no_conn == 0:
-                break
-            winsound.PlaySound('Feed.wav', \
-                       winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_NOWAIT)
+            if option == 0:
+                pass
+            else:
+                if no_conn == 0:
+                    break
+            try:
+                winsound.PlaySound('Feed.wav', \
+                        winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_NOSTOP)
+            except:
+                logger.exception("Exception Logged")
             sleep(3)
     #     wtime = time
     #     global song,shouhuo_yc_second,faliao_yc_second
