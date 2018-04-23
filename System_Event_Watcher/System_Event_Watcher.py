@@ -92,7 +92,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         #     self.db_getimg_fail()
         # release = threading.Thread(target=self.manual_release,args=(5,))
         # release.start()
-        self.db_getimg_fail() #网络失败重连
+
         autoupdate = threading.Thread(target=self.autoprdate, daemon=True) #自动刷新数据的线程
         autoupdate.start()
 
@@ -155,21 +155,22 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def db_getimg_fail(self):
         global no_conn
         if no_conn == 1: #异常检测
-            logger.warning('网络异常，连接不到数据库')
-            do = QMessageBox.warning(self,"网络异常","数据获取失败,是否重新连接?",\
-                                     QMessageBox.Retry,QMessageBox.No)
-            if do == 524288:
-                no_conn = 0
-                #self.manual_release(0)  #是否需要解锁按钮还要测试
-            else:
-                end = QMessageBox.critical(self,"网络异常","无法获取数据,程序即将退出",\
-                                           QMessageBox.Ok,QMessageBox.No)
-                if end == 1024:
-                    sys.exit(1)
-                else:
-                    pass
-        else:
-            pass
+
+            logger.warning('网络异常，正在重试连接')
+        #     do = QMessageBox.warning(self,"网络异常","数据获取失败,是否重新连接?",\
+        #                              QMessageBox.Retry,QMessageBox.No)
+        #     if do == 524288:
+            no_conn = 0
+        #         #self.manual_release(0)  #是否需要解锁按钮还要测试
+        #     else:
+        #         end = QMessageBox.critical(self,"网络异常","无法获取数据,程序即将退出",\
+        #                                    QMessageBox.Ok,QMessageBox.No)
+        #         if end == 1024:
+        #             sys.exit(1)
+        #         else:
+        #             pass
+        # else:
+        #     pass
 
     def prData(self):
         """更新界面数据"""
@@ -205,7 +206,8 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             playWaring = threading.Thread(target=self.waring, daemon=True,args=(1,))
             playWaring.start()
             logger.warning('网络异常，无法获取数据库数据')
-            self.manual_release(0)
+            #self.manual_release(0)
+            self.db_getimg_fail()  # 网络失败重连
         else:
 
             try:
@@ -254,7 +256,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                     break
             try:
                 winsound.PlaySound('Feed.wav', \
-                        winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_NOSTOP)
+                        winsound.SND_FILENAME | winsound.SND_ASYNC )
             except:
                 logger.exception("Exception Logged")
             sleep(3)
