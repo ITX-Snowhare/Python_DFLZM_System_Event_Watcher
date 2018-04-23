@@ -4,7 +4,11 @@
 
 主界面程序
 作者:韦俊杰
-最后编辑:
+最后编辑: 2018年04月23日
+
+获取自动收货及厂内发料的运行状态
+获取LN“第一个空号”大于900000的预警
+获取各生产系统接口的情况（未启用）
 
 """
 import sys
@@ -80,7 +84,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         """
         开始刷新界面(收货发料)
         """
-        self.manual_lock()
+        self.manual_lock() #按钮变灰
         # update = threading.Thread(target=self.db_data_update,daemon=True)
         # update.start()
         # update.join()
@@ -88,8 +92,8 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         #     self.db_getimg_fail()
         # release = threading.Thread(target=self.manual_release,args=(5,))
         # release.start()
-        self.db_getimg_fail()
-        autoupdate = threading.Thread(target=self.autoprdate, daemon=True)
+        self.db_getimg_fail() #网络失败重连
+        autoupdate = threading.Thread(target=self.autoprdate, daemon=True) #自动刷新数据的线程
         autoupdate.start()
 
     # def autoflash(self,state):
@@ -156,7 +160,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                                      QMessageBox.Retry,QMessageBox.No)
             if do == 524288:
                 no_conn = 0
-                self.manual_release(0)
+                #self.manual_release(0)  #是否需要解锁按钮还要测试
             else:
                 end = QMessageBox.critical(self,"网络异常","无法获取数据,程序即将退出",\
                                            QMessageBox.Ok,QMessageBox.No)
@@ -183,6 +187,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second\
                 = time.shouhuo_handle(shouhuotime,db_stat)
             #self.db_getimg_fail()
+
             warn_time = 600 #报警条件，单位是秒
 
             # save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
@@ -204,7 +209,6 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         else:
 
             try:
-
 
                 self.cpfaliaotime.setText(str(faliao_now))
                 self.ln_flyc.setText(str(faliao_flyc))
@@ -240,7 +244,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                 logger.exception("Exception Logged")
             #
     def waring(self,option):
-    #     """报警声音文件"""
+    #     """报警声音"""
         global song,no_conn
         while song == 0:
             if option == 0:
@@ -270,7 +274,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
              song = 0
 
     def autoflash(self,state):
-        """静音"""
+        """自动刷新"""
         global autof
         if state == Qt.Checked:
             autof = 1

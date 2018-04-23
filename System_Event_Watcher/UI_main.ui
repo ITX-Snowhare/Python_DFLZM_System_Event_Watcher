@@ -88,6 +88,9 @@
     </item>
     <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="tabPosition">
        <enum>QTabWidget::North</enum>
       </property>
@@ -516,6 +519,9 @@
            </item>
            <item row="1" column="1">
             <widget class="QLabel" name="ln_up_count">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>0</string>
              </property>
@@ -530,6 +536,9 @@
            </item>
            <item row="2" column="1">
             <widget class="QLabel" name="ln_down_count">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>0</string>
              </property>
@@ -568,6 +577,9 @@
            </item>
            <item row="1" column="1">
             <widget class="QLabel" name="mes_up_count_3">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>0</string>
              </property>
@@ -582,6 +594,9 @@
            </item>
            <item row="2" column="1">
             <widget class="QLabel" name="mes_down_count_3">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>0</string>
              </property>
@@ -620,6 +635,9 @@
            </item>
            <item row="1" column="1">
             <widget class="QLabel" name="sps_up_count_2">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>0</string>
              </property>
@@ -634,6 +652,9 @@
            </item>
            <item row="2" column="1">
             <widget class="QLabel" name="sps_down_count_2">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>0</string>
              </property>
@@ -672,6 +693,9 @@
            </item>
            <item row="1" column="1">
             <widget class="QLabel" name="cp_up_count_4">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>0</string>
              </property>
@@ -686,6 +710,9 @@
            </item>
            <item row="2" column="1">
             <widget class="QLabel" name="cp_down_count_4">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>0</string>
              </property>
@@ -694,6 +721,19 @@
           </layout>
          </item>
         </layout>
+       </widget>
+       <widget class="QLabel" name="label_20">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>170</y>
+          <width>271</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>本页面未开发完成，尚不能工作。</string>
+        </property>
        </widget>
       </widget>
      </widget>
