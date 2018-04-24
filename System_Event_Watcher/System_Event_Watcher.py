@@ -189,7 +189,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                 = time.shouhuo_handle(shouhuotime,db_stat)
             #self.db_getimg_fail()
 
-            warn_time = 600 #报警条件，单位是秒
+            warn_time = 1 #报警条件，单位是秒
 
             # save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
             #            + ',' + 'shouhuo_yc_second: ' + str(shouhuo_yc_second)\
@@ -248,18 +248,22 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def waring(self,option):
     #     """报警声音"""
         global song,no_conn
+        global ps
         while song == 0:
-            if option == 0:
-                pass
-            else:
-                if no_conn == 0:
-                    break
+
             try:
-                winsound.PlaySound('Feed.wav', \
+                ps = winsound.PlaySound('Feed.wav', \
                         winsound.SND_FILENAME | winsound.SND_ASYNC )
             except:
                 logger.exception("Exception Logged")
-            sleep(3)
+
+            if option == 0:
+                break
+            else:
+                if no_conn == 0:
+                    break
+
+            sleep(5)
     #     wtime = time
     #     global song,shouhuo_yc_second,faliao_yc_second
     #     while song == 0 and (shouhuo_yc_second >= wtime or faliao_yc_second >= wtime):
