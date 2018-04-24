@@ -189,7 +189,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                 = time.shouhuo_handle(shouhuotime,db_stat)
             #self.db_getimg_fail()
 
-            warn_time = 1 #报警条件，单位是秒
+            warn_time = 600 #报警条件，单位是秒
 
             # save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
             #            + ',' + 'shouhuo_yc_second: ' + str(shouhuo_yc_second)\
