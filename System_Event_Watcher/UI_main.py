@@ -371,7 +371,7 @@ class Ui_Form(object):
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
 
         self.retranslateUi(Form)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         self.pushButton.clicked.connect(Form.close)
         self.about_button.clicked.connect(Form.show)
         QtCore.QMetaObject.connectSlotsByName(Form)
