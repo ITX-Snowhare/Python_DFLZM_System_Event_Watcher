@@ -121,7 +121,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             no_conn = db_stat
             self.prData()
             if no_conn == 1:
-                raise ValueError("网络异常，无法正常获取数据库数据")
+                logger.warning('无法获取数据库数据')
 
             sleep(5)
 
