@@ -36,18 +36,20 @@ ln_scn_date = rows = 0
 song = 0
 autof = 1
 
-LOG_FORMAT = "%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s"
+LOG_FORMAT = '%(asctime)s - %(module)s.%(funcName)s.%(lineno)d - %(levelname)s - %(message)s'
+formatter = logging.Formatter(LOG_FORMAT)
+
 logger = logging.getLogger('mylogger')
 logger.setLevel(logging.DEBUG)
 
 fh = logging.FileHandler(os.path.join(os.getcwd(), 'log.txt'))
 fh.setLevel(logging.DEBUG)
-fh = TimedRotatingFileHandler('log.txt',when='D',interval=1,backupCount=10)
+fh = TimedRotatingFileHandler(filename='log.txt',when='midnight',interval=1,backupCount=7)
+#logging.handlers.suffix = "%Y-%m-%d"
 
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 
-formatter = logging.Formatter('%(asctime)s - %(module)s.%(funcName)s.%(lineno)d - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 ch.setFormatter(formatter)
 
@@ -180,6 +182,8 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         global shouhuotime,faliaotime,db_stat
         global song,no_conn
 
+        warn_time = 600  # 报警条件，单位是秒
+
         try:
 
             time = sf_time_handle()
@@ -188,8 +192,6 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             shouhuo_now, shouhuo_clyc, shouhuo_shyc, shouhuo_yc_second\
                 = time.shouhuo_handle(shouhuotime,db_stat)
             #self.db_getimg_fail()
-
-            warn_time = 600 #报警条件，单位是秒
 
             # save_log = 'faliao_yc_second: ' + str(faliao_yc_second)\
             #            + ',' + 'shouhuo_yc_second: ' + str(shouhuo_yc_second)\
