@@ -38,14 +38,15 @@ class fileCount:
 
         return count
 
-    def userLink(self):
+    def userLink(self,way):
 
-        os.system('net use \\172.16.0.214\csv /user:baan "lqit-ln@ld"')
+        if way == 'ln':
+            os.system('net use \\172.16.0.214\csv /user:baan "lqit-ln@ld"')
         #os.system('net use \\172.15.1.60\csv /user:guest "guest"')
-        os.system('net use \\172.20.0.34\d$\PVLDMES /user:administrator "lqit-#4"')
+        # os.system('net use \\172.20.0.34\d$\PVLDMES /user:administrator "lqit-#4"')
 
 if __name__=="__main__":
     test = fileCount()
-    test.userLink()
+    test.userLink('ln')
     a = test.count('lnu')
     print(a)

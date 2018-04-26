@@ -112,20 +112,20 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         global no_conn
         global autof
         #self.db_getimg_fail()
-        while autof:
-            db = Db_Contro()
-            db.conn('ln')
-            global shouhuotime,faliaotime,db_stat
-            try:
+        try:
+            while autof:
+                db = Db_Contro()
+                db.conn('ln')
+                global shouhuotime,faliaotime,db_stat
                 shouhuotime,faliaotime,db_stat = db.get_sfimg(no_conn)
-            except:
-                logger.exception("Exception Logged")
-            no_conn = db_stat
-            self.prData()
-            if no_conn == 1:
-                logger.warning('无法获取数据库数据')
+                no_conn = db_stat
+                self.prData()
+                if no_conn == 1:
+                    logger.warning('无法正确获取数据库数据')
+                sleep(5)
+        except:
+            logger.exception("Exception Logged")
 
-            sleep(5)
 
 
 
@@ -205,8 +205,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             self.fl_ln_clyc.setText(str('网络异常，请重新刷新！'))
             self.sh_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
             self.fl_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
-            playWaring = threading.Thread(target=self.waring, daemon=True,args=(1,))
-            playWaring.start()
+            self.waring(1)
             logger.warning('网络异常，无法获取数据库数据')
             #self.manual_release(0)
             self.db_getimg_fail()  # 网络失败重连
@@ -251,21 +250,21 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     #     """报警声音"""
         global song,no_conn
         global ps
-        while song == 0:
-
-            try:
+        if option == 0:
+            if song == 0:
                 ps = winsound.PlaySound('Feed.wav', \
                         winsound.SND_FILENAME | winsound.SND_ASYNC )
-            except:
-                logger.exception("Exception Logged")
-
-            if option == 0:
-                break
+        elif option == 1:
+            if song == 0:
+                if no_conn == 1:
+                    ps = winsound.PlaySound('Feed.wav', \
+                                            winsound.SND_FILENAME | winsound.SND_ASYNC)
+                else:
+                    pass
             else:
-                if no_conn == 0:
-                    break
-
-            sleep(5)
+                pass
+        else:
+            pass
     #     wtime = time
     #     global song,shouhuo_yc_second,faliao_yc_second
     #     while song == 0 and (shouhuo_yc_second >= wtime or faliao_yc_second >= wtime):
