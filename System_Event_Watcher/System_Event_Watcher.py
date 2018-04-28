@@ -145,6 +145,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             logger.exception("Exception Logged")
         no_conn = db_stat
         self.prData()
+        QApplication.processEvents()
 
 
     def manual_lock(self):
@@ -229,6 +230,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                 else:
                     self.fl_ln_clyc.setText(str(faliao_clyc))
                     self.fl_ln_clyc.setStyleSheet("background-color: none;color:black")
+
 
                 if song == 0 and (shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time):
                     self.waring(0)

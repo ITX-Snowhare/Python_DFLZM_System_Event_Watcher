@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>系统事件信息查看器</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>image/confirm_24px_1209036_easyicon.net.ico</normaloff>image/confirm_24px_1209036_easyicon.net.ico</iconset>
+  </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
