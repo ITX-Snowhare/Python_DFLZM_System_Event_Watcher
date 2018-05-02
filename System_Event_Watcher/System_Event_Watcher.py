@@ -145,7 +145,6 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
             logger.exception("Exception Logged")
         no_conn = db_stat
         self.prData()
-        QApplication.processEvents()
 
 
     def manual_lock(self):
