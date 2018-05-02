@@ -120,8 +120,8 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                 shouhuotime,faliaotime,db_stat = db.get_sfimg(no_conn)
                 no_conn = db_stat
                 self.prData()
-                if no_conn == 1:
-                    logger.warning('无法正确获取数据库数据')
+                # if no_conn == 1:
+                #     logger.warning('无法正确获取数据库数据')
                 sleep(5)
         except:
             logger.exception("Exception Logged")
@@ -172,8 +172,8 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         #             sys.exit(1)
         #         else:
         #             pass
-        # else:
-        #     pass
+        else:
+            pass
 
     def prData(self):
         """更新界面数据"""
@@ -201,18 +201,19 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         except:
             logger.exception("Exception Logged")
 
-        if no_conn == 1:
-            self.sh_ln_clyc.setText(str('网络异常，请重新刷新！'))
-            self.fl_ln_clyc.setText(str('网络异常，请重新刷新！'))
-            self.sh_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
-            self.fl_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
-            self.waring(1)
-            logger.warning('网络异常，无法获取数据库数据')
-            #self.manual_release(0)
-            self.db_getimg_fail()  # 网络失败重连
-        else:
+        try:
 
-            try:
+            if no_conn == 1:
+                self.sh_ln_clyc.setText(str('网络异常，请重新刷新！'))
+                self.fl_ln_clyc.setText(str('网络异常，请重新刷新！'))
+                self.sh_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
+                self.fl_ln_clyc.setStyleSheet("background-color: rgb(250, 250, 0);color:red")
+                self.waring(1)
+                logger.warning('网络异常，无法获取数据库数据')
+                #self.manual_release(0)
+                self.db_getimg_fail()  # 网络失败重连
+
+            else:
 
                 self.cpfaliaotime.setText(str(faliao_now))
                 self.ln_flyc.setText(str(faliao_flyc))
@@ -232,21 +233,21 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                     self.fl_ln_clyc.setStyleSheet("background-color: none;color:black")
 
 
-                if song == 0 and (shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time):
-                    self.waring(0)
+            if song == 0 and (shouhuo_yc_second >= warn_time or faliao_yc_second >= warn_time):
+                self.waring(0)
 
-                if shouhuo_yc_second >= warn_time:
-                    logger.warning('收货处理时间超时')
+            if shouhuo_yc_second >= warn_time:
+                logger.warning('收货处理时间超时')
 
-                if faliao_yc_second >= warn_time:
-                    logger.warning('发料处理时间超时')
+            if faliao_yc_second >= warn_time:
+                logger.warning('发料处理时间超时')
             #         song_play = threading.Thread(target=self.waring, daemon=True,args=(warn_time,),name='p_warn')
             #         if song_play.is_alive():
             #             pass
             #         else:
             #             song_play.start()
-            except:
-                logger.exception("Exception Logged")
+        except:
+            logger.exception("Exception Logged")
             #
     def waring(self,option):
     #     """报警声音"""
