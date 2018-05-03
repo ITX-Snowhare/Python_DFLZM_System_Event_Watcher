@@ -130,7 +130,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
                 global shouhuotime,faliaotime,db_stat
                 shouhuotime,faliaotime,db_stat = db.get_sfimg(no_conn)
                 no_conn = db_stat
-                self.prData()
+                #self.prData()
                 # if no_conn == 1:
                 #     logger.warning('无法正确获取数据库数据')
                 sleep(5)
