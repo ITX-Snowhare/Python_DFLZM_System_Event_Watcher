@@ -35,6 +35,7 @@ shouhuotime = faliaotime = db_stat = 0
 ln_scn_date = rows = 0
 song = 0
 autof = 1
+begin = 0
 
 LOG_FORMAT = '%(asctime)s - %(module)s.%(funcName)s.%(lineno)d - %(levelname)s - %(message)s'
 formatter = logging.Formatter(LOG_FORMAT)
@@ -82,10 +83,12 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         self.ln_snc.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.ln_scn_db_mu.clicked.connect(self.prLnscn_m)
 
+
     def db_manual(self):
         """
         开始刷新界面(收货发料)
         """
+        global begin
         self.manual_lock() #按钮变灰
         # update = threading.Thread(target=self.db_data_update,daemon=True)
         # update.start()
@@ -94,6 +97,14 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         #     self.db_getimg_fail()
         # release = threading.Thread(target=self.manual_release,args=(5,))
         # release.start()
+        if begin == 0:
+            # 界面定时更新
+            self.timer = QTimer(self)  # 初始化一个定时器
+            self.timer.timeout.connect(self.prData)  # 计时结束调用operate()方法
+            self.timer.start(5000)  # 设置计时间隔并启动,单位为毫秒
+            begin = 1
+        else:
+            pass
 
         autoupdate = threading.Thread(target=self.autoprdate, daemon=True) #自动刷新数据的线程
         autoupdate.start()
@@ -144,7 +155,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         except:
             logger.exception("Exception Logged")
         no_conn = db_stat
-        self.prData()
+        #self.prData()
 
 
     def manual_lock(self):
