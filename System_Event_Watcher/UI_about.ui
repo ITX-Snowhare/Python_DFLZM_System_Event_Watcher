@@ -85,7 +85,7 @@
     <enum>QFrame::Sunken</enum>
    </property>
    <property name="text">
-    <string>本软件使用Python 3.6以及PyQt5(GPL)进行开发。                            问题反馈及源码索取：请发送邮件至 weijj@dflzm.com</string>
+    <string>本软件使用Python 3.6以及PyQt5(GPL)进行开发。                                          问题反馈及源码索取：请发送邮件至 weijj@kydz.org.cn</string>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
