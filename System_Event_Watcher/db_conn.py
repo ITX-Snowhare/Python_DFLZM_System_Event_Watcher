@@ -64,7 +64,7 @@ class Db_Contro:
 
                 cursor = dbc.cursor()
                 cursor.execute(
-                    'SELECT t$ddt+1/3,TO_DATE( substr(TRIM(t$dsca),-18,14) ,\'yyyy/mm/dd hh24:mi:ss\') '
+                    'SELECT t$ddt+1/3,TO_DATE( concat ((substr(TRIM(t$dsca),21,12)),\'59\'),\'yyyy/mm/dd hh24:mi:ss\') '
                     'FROM ttiliu039302 '
                     'WHERE t$ddt+1/3 >(sysdate-15) '
                     'ORDER BY t$ddt  DESC')
@@ -132,7 +132,7 @@ class Db_Contro:
 if __name__=="__main__":
     test = Db_Contro()
     test.conn('ln')
-    a,b,c = test.get_lnscn(0)
+    a,b,c = test.get_sfimg(0)
     print(a)
     print(b)
     print(c)
