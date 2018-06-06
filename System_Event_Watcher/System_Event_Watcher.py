@@ -33,6 +33,7 @@ faliao_now = faliao_clyc = faliao_flyc = faliao_yc_second = 0
 shouhuo_now = shouhuo_clyc = shouhuo_shyc = shouhuo_yc_second = 0
 shouhuotime = faliaotime = db_stat = 0
 ln_scn_date = rows = 0
+cp_log = 0
 song = 0
 autof = 1
 begin = 0
@@ -82,6 +83,14 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         self.ln_snc.horizontalHeader().setStretchLastSection(True)
         self.ln_snc.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.ln_scn_db_mu.clicked.connect(self.prLnscn_m)
+
+        #CPLOG查询界面代码：
+        self.CP_LOGb=QStandardItemModel(0,2);
+        self.CP_LOGb.setHorizontalHeaderLabels(['文件夹', '日期'])
+        self.CP_LOG.setModel(self.CP_LOGb)
+        self.CP_LOG.horizontalHeader().setStretchLastSection(True)
+        self.CP_LOG.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.CP_LOG_FLASH.clicked.connect(self.prCplog_m)
 
 
     def db_manual(self):
@@ -336,6 +345,39 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
     def manual_release_scn(self,time):
         sleep(time)
         self.ln_scn_db_mu.setDisabled(False)
+
+    def prCplog(self):
+
+        global no_conn
+        db = Db_Contro()
+        db.conn('cp')
+        global cp_log,db_stat,rows
+        cp_log,rows,db_stat = db.get_cplog(no_conn)
+        no_conn = db_stat
+        #date_handle = ln_scn_handle.get_ln_scn(self,ln_scn_date,rows,db_stat)
+        for row in range(rows):
+            for column in range(2):
+                temp_data = cp_log[row][column]  # 临时记录，不能直接插入表格
+                #data = QTableWidgetItem(str(temp_data))  # 转换后可插入表格
+                data = QStandardItem(str(temp_data))
+                self.CP_LOGb.setItem(row, column, data)
+
+    def prCplog_m(self):
+
+        self.manual_lock_cplog()
+        update = threading.Thread(target=self.prCplog,daemon=True)
+        update.start()
+        #update.join()
+
+        release = threading.Thread(target=self.manual_release_cplog,args=(5,))
+        release.start()
+
+    def manual_lock_cplog(self):
+        self.CP_LOG_FLASH.setDisabled(True)
+
+    def manual_release_cplog(self,time):
+        sleep(time)
+        self.CP_LOG_FLASH.setDisabled(False)
 
 class About_Window(QWidget, UI_about.Ui_Dialog):
     def __init__(self, parent=None):

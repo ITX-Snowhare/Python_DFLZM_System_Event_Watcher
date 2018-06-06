@@ -32,7 +32,8 @@ class Db_Contro:
         global db_conn
         if db_name == 'ln':
             db_conn = 'baan/baan@172.16.0.106:1521/ldlndb'
-            # 添加其他数据库
+        elif db_name =='cp':
+            db_conn = 'lqpvcp/cptrue2@172.15.1.118:1521/pvcp'
         else:
             no_conn = 1
 
@@ -128,11 +129,49 @@ class Db_Contro:
 
         return lnscn,rows,no_conn
 
+    def get_cplog(self,error):
+
+        global no_conn
+        global db_conn
+
+        if error == 0:
+            try:
+                dbc = cx_Oracle.connect(db_conn)
+                #print('数据库已连接！')
+                no_conn = 0
+            except:
+                #print('网络或数据库异常！')
+                no_conn = 1
+                #sys.exit(1)
+
+        if no_conn == 0:
+
+            cursor = dbc.cursor()
+            cursor.execute(
+                'select distinct SUBSTR(FILE_NAME,11) ER_FILE,TO_CHAR(WTIME,\'YYYY-MM-DD\') ER_DATE \
+                from EP_UM_FILE_LOG where WTIME > SYSDATE - 7 and LOG_TYPE = 2 \
+                and FILE_NAME like \'D:\Cp\Log\%\' order by ER_DATE DESC')
+            cplog = cursor.fetchall()
+            rows = cursor.rowcount
+
+            cursor.close()
+            dbc.close()
+
+            if rows == 0:
+                rows = 1
+                cplog = [('无数据', '无数据')]
+
+        else:
+            rows = 1
+            cplog = [('网络异常', '网络异常')]
+
+        return cplog,rows,no_conn
+
 
 if __name__=="__main__":
     test = Db_Contro()
-    test.conn('ln')
-    a,b,c = test.get_sfimg(0)
+    test.conn('cp')
+    a,b,c = test.get_cplog(0)
     print(a)
     print(b)
     print(c)
