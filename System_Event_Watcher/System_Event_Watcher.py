@@ -369,7 +369,7 @@ class mainshow(QtWidgets.QWidget, UI_main.Ui_Form):
         update.start()
         #update.join()
 
-        release = threading.Thread(target=self.manual_release_cplog,args=(5,))
+        release = threading.Thread(target=self.manual_release_cplog,args=(10,))
         release.start()
 
     def manual_lock_cplog(self):

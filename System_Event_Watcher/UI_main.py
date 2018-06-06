@@ -317,7 +317,7 @@ class Ui_Form(object):
         self.ln_scn_db_mu.setText(_translate("Form", "获取数据"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), _translate("Form", "LN序号"))
         self.CP_LOG_FLASH.setText(_translate("Form", "检查日志"))
-        self.label_2.setText(_translate("Form", "该界面提示存在问题的CP接口文件夹名及出现问题的日期。请检查对应文件夹的接口文件"))
+        self.label_2.setText(_translate("Form", "该界面提示7天内存在问题的CP接口文件夹名及出现问题的日期。请检查对应文件夹的接口文件"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Form", "CP日志检查"))
         self.about_button.setText(_translate("Form", "关于"))
         self.pushButton.setText(_translate("Form", "退出"))
